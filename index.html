@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Game</title>
+
+  <style>
+    *{
+      background-color: gray;
+    }
+    #gameScreen{
+      border: 1px solid black;
+    }
+    .outputText{
+      border: 2px solid black;
+    }
+    
+  </style>
+
+</head>
+<body>
+  
+  <div class="tools">
+    <button onclick="ClearCanvas()">Clear</button>
+    <button onclick="ToolChange(this.innerText)">Paint</button>
+    <button onclick="ToolChange(this.innerText)">Fill</button>
+    <button onclick="ToolChange(this.innerText)">Line</button>
+    <button onclick="ToolChange(this.innerText)">Circle</button>
+    <button onclick="ToolChange(this.innerText)">Square</button>
+    Size<input id="sizeSlider" type="range" min="1" max="100" value="50" >
+    <div id="rbgSliders">
+      R<input id="redSlider" type="range" min="0" max="255" value="100">
+      G<input id="greenSlider" type="range" min="0" max="255" value="100">
+      B<input id="blueSlider" type="range" min="0" max="255" value="100">
+    </div>
+    <p id="outputText">Paint Tool Selected</p>
+  </div>
+
+  <canvas id="gameScreen" width="720px" height="480px"> 
+      
+  </canvas>
+
+  
+
+  <script src="/TestGame/index.js"></script>
+</body>
+</html>
