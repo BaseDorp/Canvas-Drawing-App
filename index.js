@@ -36,6 +36,7 @@ function ToolChange(toolName){
             LineTool = true;
             CircleTool = false;
             SquareTool = false;
+            context.closePath(); // TODO
             break;
         case "Circle":
             PaintTool = false;
@@ -55,11 +56,6 @@ function ToolChange(toolName){
     outputField.innerText = toolName + " Tool Selected";
 }
 
-redSlider.addEventListener("input", () => {
-    
-});
-
-
 let drawingShape = false;
 
 canvas.addEventListener('mousedown', (e) => {
@@ -73,8 +69,7 @@ canvas.addEventListener('mousedown', (e) => {
 
     if (PaintTool)
     {
-        context.lineWidth = 10;
-        context.lineCap = "round";
+        drawingShape = true;
 
         
         
@@ -94,14 +89,7 @@ canvas.addEventListener('mousedown', (e) => {
     }
     else if (CircleTool)
     {
-        // canvas.addEventListener('mouseup', (e) => {
-        //     mouseX = e.clientX - canvas.getBoundingClientRect().left;
-        //     mouseY = e.clientY - canvas.getBoundingClientRect().top;
-        //     context.beginPath();
-        //     context.arc(mouseX, mouseY, Math.abs(startX - mouseX), 0, 360);
-        //     context.stroke();
-        //     context.fill();
-        // })
+        context.lineWidth = 0;
         context.beginPath();
         context.arc(mouseX, mouseY, sizeSlider.value, 0, 360);
         context.stroke();
@@ -109,18 +97,24 @@ canvas.addEventListener('mousedown', (e) => {
     }
     else if (SquareTool)
     {
-        // canvas.addEventListener('mouseup', (e) => {
-        //     mouseX = e.clientX - canvas.getBoundingClientRect().left;
-        //     mouseY = e.clientY - canvas.getBoundingClientRect().top;
-        //     context.fillRect(startX, startY, startX - mouseX, startY - mouseY);
-        //     console.log(Math.abs(mouseX - startX), Math.abs(mouseY - startY));
-        // })
         context.fillRect(mouseX - sizeSlider.value/2, mouseY - sizeSlider.value/2, sizeSlider.value, sizeSlider.value);
     }
 });
 
-window.addEventListener('mouseup', (endPosition) => {
+canvas.addEventListener("mouseup", () => {
+    context.beginPath();
+    drawingShape = false;
+});
+canvas.addEventListener("mousemove", (e) => {
+    if (!drawingShape) return;
+    context.strokeStyle = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+    context.lineWidth = sizeSlider.value;
+    context.lineCap = "round";
 
+    context.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
 });
 
 function ClearCanvas(){
