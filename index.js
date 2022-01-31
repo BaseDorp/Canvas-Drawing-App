@@ -2,11 +2,26 @@ const canvas = document.getElementById("gameScreen");
 const context = canvas.getContext("2d");
 
 let outputField = document.getElementById("outputText");
+let sizeSlider = document.getElementById("sizeSlider");
+
+
+// Gets the values from the RBG sliders and creates a preview color
 let redSlider = document.getElementById("redSlider");
 let greenSlider = document.getElementById("greenSlider");
 let blueSlider = document.getElementById("blueSlider");
-let sizeSlider = document.getElementById("sizeSlider");
+redSlider.addEventListener("input", updateColorPreview)
+greenSlider.addEventListener("input", updateColorPreview)
+blueSlider.addEventListener("input", updateColorPreview)
 
+let colorPreview = document.getElementById("color-preview");
+colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+
+function updateColorPreview()
+{
+    colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+}
+
+//
 let PaintTool = true;
 let FillTool = false;
 let LineTool = false;
@@ -36,7 +51,6 @@ function ToolChange(toolName){
             LineTool = true;
             CircleTool = false;
             SquareTool = false;
-            context.closePath(); // TODO
             break;
         case "Circle":
             PaintTool = false;
@@ -56,7 +70,9 @@ function ToolChange(toolName){
     outputField.innerText = toolName + " Tool Selected";
 }
 
-let drawingShape = false;
+// 
+let painting = false;
+let drawingLine = false;
 
 canvas.addEventListener('mousedown', (e) => {
     let mouseX = e.clientX - canvas.getBoundingClientRect().left;
@@ -69,10 +85,8 @@ canvas.addEventListener('mousedown', (e) => {
 
     if (PaintTool)
     {
-        drawingShape = true;
-
-        
-        
+        painting = true;
+        draw(e);
     }
     else if (FillTool)
     {
@@ -80,10 +94,12 @@ canvas.addEventListener('mousedown', (e) => {
     }
     else if (LineTool)
     {
-        if (!drawingShape){
+        if (!drawingLine){
             context.beginPath();
-            drawingShape = true;
+            drawingLine = true;
         }
+        context.strokeStyle = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+        context.lineWidth = sizeSlider.value;
         context.lineTo(mouseX, mouseY);
         context.stroke();
     }
@@ -101,12 +117,21 @@ canvas.addEventListener('mousedown', (e) => {
     }
 });
 
+// 
 canvas.addEventListener("mouseup", () => {
+    if (PaintTool == true){
     context.beginPath();
-    drawingShape = false;
+    painting = false;
+    }
 });
-canvas.addEventListener("mousemove", (e) => {
-    if (!drawingShape) return;
+canvas.addEventListener("mousemove", draw);
+
+function draw(e)
+{
+    if (!painting) return;
+
+    // paint styling
+    context.beginPath();
     context.strokeStyle = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
     context.lineWidth = sizeSlider.value;
     context.lineCap = "round";
@@ -115,9 +140,10 @@ canvas.addEventListener("mousemove", (e) => {
     context.stroke();
     context.beginPath();
     context.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
-});
+}
 
 function ClearCanvas(){
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawingShape = false;
+    drawingShape = false; // TODO dont think i need these
+    drawingLine = false;
 }
