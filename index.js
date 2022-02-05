@@ -1,4 +1,4 @@
-const canvas = document.getElementById("gameScreen");
+const canvas = document.getElementById("drawing-board");
 const context = canvas.getContext("2d");
 
 let outputField = document.getElementById("outputText");
@@ -13,68 +13,32 @@ redSlider.addEventListener("input", updateColorPreview)
 greenSlider.addEventListener("input", updateColorPreview)
 blueSlider.addEventListener("input", updateColorPreview)
 
+// sets div to the rbg values of the sliders
 let colorPreview = document.getElementById("color-preview");
 colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
 
 function updateColorPreview()
 {
     colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+
+    context.beginPath();
 }
+sizeSlider.addEventListener("input", ()=>{
+    context.beginPath();
+})
 
-//
-let PaintTool = true;
-let FillTool = false;
-let LineTool = false;
-let CircleTool = false;
-let SquareTool = false;
-
-
+// Changes which tool the user has selected
+let toolSelected = "Paint";
 function ToolChange(toolName){
-    switch (toolName){
-        case "Paint":
-            PaintTool = true;
-            FillTool = false;
-            LineTool = false;
-            CircleTool = false;
-            SquareTool = false;
-            break;
-        case "Fill":
-            PaintTool = false;
-            FillTool = true;
-            LineTool = false;
-            CircleTool = false;
-            SquareTool = false;
-            break;
-        case "Line":
-            PaintTool = false;
-            FillTool = false;
-            LineTool = true;
-            CircleTool = false;
-            SquareTool = false;
-            break;
-        case "Circle":
-            PaintTool = false;
-            FillTool = false;
-            LineTool = false;
-            CircleTool = true;
-            SquareTool = false;
-            break;
-        case "Square":
-            PaintTool = false;
-            FillTool = false;
-            LineTool = false;
-            CircleTool = false;
-            SquareTool = true;
-            break;
-    }
     outputField.innerText = toolName + " Tool Selected";
+    toolSelected = toolName;
 }
 
-// 
 let painting = false;
-let drawingLine = false;
 
+context.beginPath();
 canvas.addEventListener('mousedown', (e) => {
+    // Get mouse position on the canvas relative to the screen space
     let mouseX = e.clientX - canvas.getBoundingClientRect().left;
     let mouseY = e.clientY - canvas.getBoundingClientRect().top;
     let startX = mouseX;
@@ -83,43 +47,43 @@ canvas.addEventListener('mousedown', (e) => {
     // Get color from rgb sliders
     context.fillStyle = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
 
-    if (PaintTool)
+    switch (toolSelected)
     {
-        painting = true;
-        draw(e);
-    }
-    else if (FillTool)
-    {
-        
-    }
-    else if (LineTool)
-    {
-        if (!drawingLine){
+        case "Paint":
+            painting = true;
+            draw(e);
+            break;
+
+        case "Fill":
+
+            break;
+
+        case "Line":
+            context.strokeStyle = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+            context.lineWidth = sizeSlider.value;
+            context.lineJoin = "round";
+            context.lineCap = "round";
+            
+            context.lineTo(mouseX, mouseY);
+            context.stroke();
+            break;
+
+        case "Circle":
+            context.lineWidth = 0;
             context.beginPath();
-            drawingLine = true;
-        }
-        context.strokeStyle = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
-        context.lineWidth = sizeSlider.value;
-        context.lineTo(mouseX, mouseY);
-        context.stroke();
-    }
-    else if (CircleTool)
-    {
-        context.lineWidth = 0;
-        context.beginPath();
-        context.arc(mouseX, mouseY, sizeSlider.value, 0, 360);
-        context.stroke();
-        context.fill();
-    }
-    else if (SquareTool)
-    {
-        context.fillRect(mouseX - sizeSlider.value/2, mouseY - sizeSlider.value/2, sizeSlider.value, sizeSlider.value);
+            context.arc(mouseX, mouseY, sizeSlider.value, 0, 360);
+            context.fill();
+            break;
+
+        case "Square":
+            context.fillRect(mouseX - sizeSlider.value/2, mouseY - sizeSlider.value/2, sizeSlider.value, sizeSlider.value);
+            break;
     }
 });
 
 // 
 canvas.addEventListener("mouseup", () => {
-    if (PaintTool == true){
+    if (toolSelected == "Paint"){
     context.beginPath();
     painting = false;
     }
@@ -142,8 +106,8 @@ function draw(e)
     context.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
 }
 
+//
 function ClearCanvas(){
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawingShape = false; // TODO dont think i need these
     drawingLine = false;
 }

@@ -1,57 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas Drawing App</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canvas Drawing App</title>
-
-  <style>
-    *{
-      background-color: gray;
-    }
-    #gameScreen{
-      border: 1px solid black;
-    }
-    .outputText{
-      border: 2px solid black;
-    }
-    #color-preview{
-      width: 50px;
-      height: 50px;
-      border: 1px solid black;
-    }
-    
-  </style>
-
-</head>
-<body>
-  
-  <div class="tools">
-    <button onclick="ClearCanvas()">Clear</button>
-    <button onclick="ToolChange(this.innerText)">Paint</button>
-    <!-- <button onclick="ToolChange(this.innerText)">Fill</button> -->
-    <button onclick="ToolChange(this.innerText)">Line</button>
-    <button onclick="ToolChange(this.innerText)">Circle</button>
-    <button onclick="ToolChange(this.innerText)">Square</button>
-    Size<input id="sizeSlider" type="range" min="1" max="100" value="25" >
-    <div id="rbgSliders">
-      R<input id="redSlider" type="range" min="0" max="255" value="100">
-      G<input id="greenSlider" type="range" min="0" max="255" value="100">
-      B<input id="blueSlider" type="range" min="0" max="255" value="100">
-      <div id="color-preview"></div>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div class="tools">
+      <button onclick="ClearCanvas()">Clear</button>
+      <button onclick="ToolChange('Paint')">Paint</button>
+      <button onclick="ToolChange('Line')" title="Line Tool">Line</button>
+      <button onclick="ToolChange('Circle')">Circle</button>
+      <button onclick="ToolChange('Square')">Square</button>
+    </div>
+    <div class="sliders">
+      <!-- <div id="color-preview"></div> -->
+      Color<input type="color">
+      Size<input id="sizeSlider" type="range" min="1" max="100" value="25" />
+      <!-- R<input id="redSlider" type="range" min="0" max="255" value="100" />
+      G<input id="greenSlider" type="range" min="0" max="255" value="100" />
+      B<input id="blueSlider" type="range" min="0" max="255" value="100" /> -->
     </div>
     <p id="outputText">Paint Tool Selected</p>
-  </div>
 
-  <canvas id="gameScreen" width="720px" height="480px"> 
-      
-  </canvas>
+    <canvas id="drawing-board" width="720px" height="480px"></canvas>
 
-  
-
-  <script src="/index.js"></script>
-</body>
+    <script src="/index.js"></script>
+  </body>
 </html>
+
+<!-- TODO 
+  Stroke Fill Checkbox?
+-->
