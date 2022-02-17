@@ -18,6 +18,10 @@ body {
   /* width: 98vw; */
 }
 
+/* #drawing-board:hover{
+  cursor: crosshair;
+} */
+
 .outputText {
   border: 2px solid black;
 }
