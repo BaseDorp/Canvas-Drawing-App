@@ -1,43 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Canvas Drawing App</title>
 
-    <link rel="stylesheet" href="/style.css">
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canvas Drawing App</title>
+
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+  
+  <section class="main-content">
     <div class="tools">
       <button onclick="ClearCanvas()">Clear</button>
+      <button onclick="Undo()">Undo</button>
+
       <button onclick="ToolChange('Paint')">Paint</button>
       <button onclick="ToolChange('Line')" title="Line Tool">Line</button>
       <button onclick="ToolChange('Circle')">Circle</button>
       <button onclick="ToolChange('Square')">Square</button>
+      Color<input type="color" id="colorInput" /> Size<input id="sizeSlider" type="range" min="1" max="100"
+        value="25" />
     </div>
-    <div class="sliders">
-      <!-- <div id="color-preview"></div> -->
-      Color<input type="color" id="colorInput">
-      Size<input id="sizeSlider" type="range" min="1" max="100" value="25" />
-      
+
+    <div class="drawing-board">
+      <div id="canvas-container">
+        <canvas class="canvas-layer" width="720px" height="480px"></canvas>
+      </div>
     </div>
-    <p id="outputText">Paint Tool Selected</p>
+  </section>
 
-    <canvas id="drawing-board" width="720px" height="480px"></canvas>
-
-    <div class="layers-containers">
-      
+  <div id="layers-container">
+    <div class="layer">
+      <button onclick="HideLayer(1)">Hide</button>
+      <button onclick="ChangeLayer(1)">Layer 1</button>
+      <button onclick="DeleteLayer(1)">Delete</button>
     </div>
-    <button class="add-layer">New Layer</button>
+    <button class="new-layer" onclick="NewLayer()">New Layer</button>
+    <button onclick="Save()">Save</button>
+  </div>
 
-    <button onclick="Undo()">Undo</button>
-    <!-- <button>Redo</button> -->
+  <script src="/index.js"></script>
+</body>
 
-    <script src="/index.js"></script>
-  </body>
 </html>
 
 <!-- TODO 
   Stroke Fill Checkbox?
+  CSS for current button selected
 -->
