@@ -12,8 +12,8 @@ const canvasContainer = document.getElementById("canvas-container");
 let currentLayer = 1;
 function ChangeLayer(layer) {
     // remove current even listeners
-    canvas.removeEventListener("mousemove", draw);
-    canvas.removeEventListener("mousedown", mouseDown);
+    // canvas.removeEventListener("mousemove", draw);
+    // canvas.removeEventListener("mousedown", mouseDown);
 
     currentLayer = layer;
 
@@ -82,8 +82,8 @@ document.addEventListener("mouseup", () => {
     newPath = new Path2D();
 });
 
-canvas.addEventListener("mousedown", mouseDown);
-canvas.addEventListener("mousemove", draw);
+document.addEventListener("mousedown", mouseDown);
+document.addEventListener("mousemove", draw);
 
 function mouseDown(e) {
     // Get mouse position on the canvas relative to the screen space
@@ -188,7 +188,7 @@ function ClearCanvas() {
 
 // Creates a new canvas layer
 function NewLayer() {
-    canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
+    canvasContainer.innerHTML += '<canvas class="canvas-layer"  width="720px" height="480px"></canvas>';
     canvasArray = document.querySelectorAll('[class=canvas-layer]');
 
     let temphtml = layerContainer.innerHTML;
@@ -207,7 +207,7 @@ function DeleteLayer(layer) {
     canvasContainer.innerHTML = "";
     layerContainer.innerHTML = "";
     for (let i = 0; i < canvasArray.length; i++) {
-        canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
+        canvasContainer.innerHTML += '<canvas class="canvas-layer width="720px" height="480px"></canvas>';
 
         layerContainer.innerHTML += "<div class='layer'><button onclick='HideLayer(" + (canvasArray.length - i) + ")')>Hide</button><button onclick='ChangeLayer(" + (canvasArray.length - i) + ")' >Layer " + (canvasArray.length - i) + "</button><button onclick='DeleteLayer(" + (canvasArray.length - i) + ")'>Delete</button></div>";
     }
