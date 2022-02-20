@@ -15,11 +15,12 @@ function ChangeLayer(layer) {
     // remove current even listeners
     canvasContainer.removeEventListener("mousemove", draw);
     canvasContainer.removeEventListener("mousedown", mouseDown);
-
-    currentLayer = layer-1;
+    
+    currentLayer = layer;
+    console.log("Changed to layer: " + (currentLayer));
 
     // Updates which layer the user is trying to draw on
-    canvas = canvasArray[layer - 1];
+    canvas = canvasArray[currentLayer];
     context = canvas.getContext("2d");
 
     // re add event listeners to newly selected canvas
@@ -78,9 +79,10 @@ document.addEventListener("mouseup", () => {
 
     painting = false;
     // creates the shape with all the points in the stroke
-    history.push(new Shape(points, colorInput.value, "Paint", sizeSlider.value));
+    historyArray[currentLayer].push(new Shape(points, colorInput.value, "Paint", sizeSlider.value));
     points = [];
     newPath = new Path2D();
+    console.log(historyArray[currentLayer]);
 });
 
 canvasContainer.addEventListener("mousedown", mouseDown);
@@ -90,7 +92,6 @@ function mouseDown(e) {
     // Get mouse position on the canvas relative to the screen space
     let mouseX = e.clientX - canvas.getBoundingClientRect().left;
     let mouseY = e.clientY - canvas.getBoundingClientRect().top;
-
     context.strokeStyle = colorInput.value;
 
     switch (toolSelected) {
@@ -104,7 +105,7 @@ function mouseDown(e) {
 
             context.lineTo(mouseX, mouseY);
             context.stroke();
-            history.push(new Shape(new Point(mouseX, mouseY), colorInput.value, "Line", sizeSlider.value));
+            historyArray[currentLayer].push(new Shape(new Point(mouseX, mouseY), colorInput.value, "Line", sizeSlider.value));
             break;
         case "Circle":
             let newCircle = new Path2D();
@@ -112,7 +113,7 @@ function mouseDown(e) {
             newCircle.arc(mouseX, mouseY, sizeSlider.value, 0, 360);
 
             context.stroke(newCircle);
-            history.push(new Shape(newCircle, colorInput.value, "Circle"));
+            historyArray[currentLayer].push(new Shape(newCircle, colorInput.value, "Circle"));
             break;
         case "Square":
             let newSqaure = new Path2D();
@@ -126,7 +127,6 @@ function mouseDown(e) {
             context.stroke(newSqaure);
             console.log("Current Layer: " + currentLayer);
             historyArray[currentLayer].push(new Shape(newSqaure, colorInput.value, "Square"));
-            console.log("Layer (" + (currentLayer) + ") History: " + historyArray[currentLayer]);
             break;
     }
 }
@@ -195,11 +195,21 @@ function NewLayer() {
     canvasArray = document.querySelectorAll('[class=canvas-layer]');
 
     let temphtml = layerContainer.innerHTML;
-    layerContainer.innerHTML = "<div class='layer'><button onclick='HideLayer(" + canvasArray.length + ")'>Hide</button><button onclick='ChangeLayer(" + canvasArray.length + ")' >Layer " + canvasArray.length + "</button><button onclick='DeleteLayer(" + canvasArray.length + ")'>Delete</button></div>";
+    layerContainer.innerHTML = "<div class='layer'><button onclick='HideLayer(" + (canvasArray.length-1) + ")'>Hide</button><button onclick='ChangeLayer(" + (canvasArray.length-1) + ")' >Layer " + (canvasArray.length-1) + "</button><button onclick='DeleteLayer(" + (canvasArray.length-1) + ")'>Delete</button></div>";
     layerContainer.innerHTML += temphtml;
 
     // add an array for the history of the new layer
     historyArray.push([]);
+
+    let temp = currentLayer+1;
+    // redraw the history onto the regenerated html
+    for (let i = 0; i < canvasArray.length; i++){
+        // ChangeLayer(i);
+        // UpdateCanvas();
+    }
+    console.log(currentLayer);
+    ChangeLayer(currentLayer);
+    // ChangeLayer(temp);
 }
 
 // Delete that layer
@@ -207,8 +217,16 @@ function DeleteLayer(layer) {
     if (canvasArray.length <= 1) return;
     // remove the canvas from the array and change the num of layers 
     canvasArray = Array.from(canvasArray);
-    canvasArray.splice(layer-1, 1);
-    historyArray.splice(layer-1, 1);
+    console.log(canvasArray);
+    canvasArray.splice((layer), 1);
+    historyArray.splice((layer), 1);
+    console.log("Removed Layer: " + (layer));
+    console.log(canvasArray);
+    console.log(historyArray);
+    
+
+    // if deleting the current layer, change to the next top layer
+    // if (currentLayer >= canvasArray.length-1) ChangeLayer(canvasArray-2);
 
     // Update the html
     canvasContainer.innerHTML = "";
@@ -216,10 +234,13 @@ function DeleteLayer(layer) {
     for (let i = 0; i < canvasArray.length; i++) {
         canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
 
-        layerContainer.innerHTML += "<div class='layer'><button onclick='HideLayer(" + (canvasArray.length - i) + ")')>Hide</button><button onclick='ChangeLayer(" + (canvasArray.length - i) + ")' >Layer " + (canvasArray.length - i) + "</button><button onclick='DeleteLayer(" + (canvasArray.length - i) + ")'>Delete</button></div>";
+        layerContainer.innerHTML += "<div class='layer'><button onclick='HideLayer(" + (canvasArray.length - i - 1) + ")')>Hide</button><button onclick='ChangeLayer(" + (canvasArray.length - i - 1) + ")' >Layer " + (canvasArray.length - i - 1) + "</button><button onclick='DeleteLayer(" + (canvasArray.length - i - 1) + ")'>Delete</button></div>";
     }
 
     layerContainer.innerHTML += '<button class="new-layer" onclick="NewLayer()">New Layer</button><button onclick="Save()">Save</button>';
+
+    // TODO cant draw to canvas after 
+    ChangeLayer(0);
 }
 
 // Change visibility of a layer
