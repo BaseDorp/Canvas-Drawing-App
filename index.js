@@ -82,7 +82,7 @@ document.addEventListener("mouseup", () => {
     historyArray[currentLayer].push(new Shape(points, colorInput.value, "Paint", sizeSlider.value));
     points = [];
     newPath = new Path2D();
-    console.log(historyArray[currentLayer]);
+    console.log("Layer " + currentLayer + ": " + historyArray[currentLayer]);
 });
 
 canvasContainer.addEventListener("mousedown", mouseDown);
@@ -181,6 +181,7 @@ function UpdateCanvas() {
             context.stroke();
         }
     }
+    console.log("Layer " + currentLayer + " updated");
 }
 
 // Wipes the canvas clean
@@ -191,7 +192,7 @@ function ClearCanvas() {
 
 // Creates a new canvas layer
 function NewLayer() {
-    canvasContainer.innerHTML += '<canvas class="canvas-layer"  width="720px" height="480px"></canvas>';
+    canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
     canvasArray = document.querySelectorAll('[class=canvas-layer]');
 
     let temphtml = layerContainer.innerHTML;
@@ -201,15 +202,7 @@ function NewLayer() {
     // add an array for the history of the new layer
     historyArray.push([]);
 
-    let temp = currentLayer+1;
-    // redraw the history onto the regenerated html
-    for (let i = 0; i < canvasArray.length; i++){
-        // ChangeLayer(i);
-        // UpdateCanvas();
-    }
-    console.log(currentLayer);
     ChangeLayer(currentLayer);
-    // ChangeLayer(temp);
 }
 
 // Delete that layer
@@ -218,11 +211,9 @@ function DeleteLayer(layer) {
     // remove the canvas from the array and change the num of layers 
     canvasArray = Array.from(canvasArray);
     console.log(canvasArray);
-    canvasArray.splice((layer), 1);
+    canvasArray.pop();
     historyArray.splice((layer), 1);
     console.log("Removed Layer: " + (layer));
-    console.log(canvasArray);
-    console.log(historyArray);
     
 
     // if deleting the current layer, change to the next top layer
@@ -231,25 +222,30 @@ function DeleteLayer(layer) {
     // Update the html
     canvasContainer.innerHTML = "";
     layerContainer.innerHTML = "";
-    for (let i = 0; i < canvasArray.length; i++) {
+    for (let i = (canvasArray.length-1); i >= 0; i--) {
         canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
 
-        layerContainer.innerHTML += "<div class='layer'><button onclick='HideLayer(" + (canvasArray.length - i - 1) + ")')>Hide</button><button onclick='ChangeLayer(" + (canvasArray.length - i - 1) + ")' >Layer " + (canvasArray.length - i - 1) + "</button><button onclick='DeleteLayer(" + (canvasArray.length - i - 1) + ")'>Delete</button></div>";
+        layerContainer.innerHTML += "<div class='layer'><button onclick='HideLayer(" + i + ")')>Hide</button><button onclick='ChangeLayer(" + i + ")' >Layer " + i + "</button><button onclick='DeleteLayer(" + i + ")'>Delete</button></div>";
     }
+
+    // for (let i = 0; i < canvasArray.length; i++){
+    //     console.log(canvasArray.length);
+    //     // canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
+    // }
+    canvasArray = document.querySelectorAll('[class=canvas-layer]');
 
     layerContainer.innerHTML += '<button class="new-layer" onclick="NewLayer()">New Layer</button><button onclick="Save()">Save</button>';
 
-    // TODO cant draw to canvas after 
     ChangeLayer(0);
 }
 
 // Change visibility of a layer
 function HideLayer(layer) {
-    if (canvasArray[layer - 1].style.visibility == "hidden") {
-        canvasArray[layer - 1].style.visibility = "visible";
+    if (canvasArray[layer].style.visibility == "hidden") {
+        canvasArray[layer].style.visibility = "visible";
         return;
     }
-    canvasArray[layer - 1].style.visibility = "hidden";
+    canvasArray[layer].style.visibility = "hidden";
 }
 
 function Save() {
