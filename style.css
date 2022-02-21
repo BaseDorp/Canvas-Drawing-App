@@ -11,6 +11,11 @@ body {
   text-align: center;
 }
 
+.tool:focus{
+  background-color: lightblue;
+  /* border: 0px; */
+}
+
 .main-content {
   display: flex;
   flex-direction: column;
@@ -28,17 +33,21 @@ body {
   background-color: darkgray;
 }
 
+.layer-button:focus{
+  background-color: lightblue;
+}
+
 #canvas-container {
   border: 7px solid black;
   border-radius: 15px;
   width: 720px;
   height: 480px;
-  background-color: transparent;
+  background-color: whitesmoke;
 }
 
 .canvas-layer{
-  border: 1px solid red;
-  /* width: 720px;
-  height: 480px; */
+  width: 720px;
+  height: 480px;
   position: absolute;
+  background-color: transparent;
 }

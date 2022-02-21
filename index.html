@@ -17,10 +17,10 @@
       <button onclick="ClearCanvas()">Clear</button>
       <button onclick="Undo()">Undo</button>
 
-      <button onclick="ToolChange('Paint')">Paint</button>
-      <button onclick="ToolChange('Line')" title="Line Tool">Line</button>
-      <button onclick="ToolChange('Circle')">Circle</button>
-      <button onclick="ToolChange('Square')">Square</button>
+      <button class="tool" onclick="ToolChange('Paint')">Paint</button>
+      <button class="tool" onclick="ToolChange('Line')" title="Line Tool">Line</button>
+      <button class="tool" onclick="ToolChange('Circle')">Circle</button>
+      <button class="tool" onclick="ToolChange('Square')">Square</button>
       Color<input type="color" id="colorInput" /> Size<input id="sizeSlider" type="range" min="1" max="100"
         value="25" />
     </div>
@@ -34,8 +34,8 @@
 
   <div id="layers-container">
     <div class="layer">
-      <button onclick="HideLayer(0)">Hide</button>
-      <button onclick="ChangeLayer(0)">Layer 0</button>
+      <button class="hide-button" onclick="HideLayer(0)">Hide</button>
+      <button class="layer-button" onclick="ChangeLayer(0)">Layer 0</button>
       <button onclick="DeleteLayer(0)">Delete</button>
     </div>
     <button class="new-layer" onclick="NewLayer()">New Layer</button>
