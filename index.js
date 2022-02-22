@@ -11,6 +11,7 @@ const canvasContainer = document.getElementById("canvas-container");
 
 // Change currently selected layer
 let currentLayer;
+let layerButtons = document.getElementsByClassName("layer");
 function ChangeLayer(layer) {
     // remove current even listeners
     canvasContainer.removeEventListener("mousemove", draw);
@@ -25,7 +26,13 @@ function ChangeLayer(layer) {
     // re add event listeners to newly selected canvas
     canvasContainer.addEventListener("mousedown", mouseDown);
     canvasContainer.addEventListener("mousemove", draw);
+
+    for(let i = 0; i < layerButtons.length; i++){
+        layerButtons[i].style.backgroundColor = "darkgray";
+    }
+    layerButtons[(layerButtons.length - layer - 1)].style.backgroundColor = "lightblue";
 }
+ChangeLayer(0);
 
 // 
 let sizeSlider = document.getElementById("sizeSlider");
@@ -39,13 +46,25 @@ colorInput.addEventListener("input", () => {
     context.beginPath();
 });
 
+let toolButtons = document.getElementsByClassName("tool");
 // Changes which tool the user has selected
 let toolSelected;
 function ToolChange(toolName) {
 
     toolSelected = toolName;
     context.beginPath();
+
+    for(let i = 0; i < toolButtons.length; i++){
+        if (toolButtons[i].innerHTML == toolName)
+        {
+            toolButtons[i].style.backgroundColor = "lightblue";
+        }
+        else{
+            toolButtons[i].style.backgroundColor = "white";
+        }
+    }
 }
+ToolChange("Paint");
 
 // path - either a Path2D object or points making up the shape
 // style - stroke color value 
@@ -79,6 +98,7 @@ document.addEventListener("mouseup", () => {
     historyArray[currentLayer].push(new Shape(points, colorInput.value, "Paint", sizeSlider.value));
     points = [];
     newPath = new Path2D();
+    context.beginPath();
 });
 
 canvasContainer.addEventListener("mousedown", mouseDown);
@@ -89,7 +109,6 @@ function mouseDown(e) {
     let mouseX = e.clientX - canvas.getBoundingClientRect().left;
     let mouseY = e.clientY - canvas.getBoundingClientRect().top;
     context.strokeStyle = colorInput.value;
-
     switch (toolSelected) {
         case "Paint":
             painting = true;
@@ -172,6 +191,10 @@ function UpdateCanvas() {
             }
         }
         else if (historyArray[currentLayer][i].type == "Line") {
+            if (i <= 1){
+                // Edge case where the line would draw from the end of a point of another drawing when undoing
+                context.moveTo(historyArray[currentLayer][i].path.X, historyArray[currentLayer][i].path.Y)
+            }
             context.lineTo(historyArray[currentLayer][i].path.X, historyArray[currentLayer][i].path.Y);
             context.stroke();
         }
@@ -228,7 +251,7 @@ function DeleteLayer(layer) {
     }
     canvasArray = document.querySelectorAll('[class=canvas-layer]');
 
-    layerContainer.innerHTML += '<button class="new-layer" onclick="NewLayer()">New Layer</button><button onclick="Save()">Save</button>';
+    layerContainer.innerHTML += '<button class="new-layer" onclick="NewLayer()">New Layer</button>';
 
     // redraw the canvas's after the 
     for (let i = 0; i < canvasArray.length; i++){
@@ -240,18 +263,19 @@ function DeleteLayer(layer) {
     ChangeLayer(0);
 }
 
+let hideButtons = document.getElementsByClassName("hide-button");
 // Change visibility of a layer
 function HideLayer(layer) {
     if (canvasArray[layer].style.visibility == "hidden") {
         canvasArray[layer].style.visibility = "visible";
+        // hideButtons[layer].style.backgroundColor = "white";
         return;
     }
     canvasArray[layer].style.visibility = "hidden";
+    // layerContainer[layer].style.backgroundColor = "darkgray";
 }
 
 function Save() {
     // TODO
 }
 
-let layerButtons = document.getElementsByClassName("layer");
-let toolButtons = document.getElementsByClassName("tool");
