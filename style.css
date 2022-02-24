@@ -11,6 +11,10 @@ body {
   text-align: center;
 }
 
+label{
+  margin-right: 5px;
+}
+
 button{
   border: none;
 }

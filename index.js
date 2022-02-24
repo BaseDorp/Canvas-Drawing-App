@@ -109,6 +109,7 @@ function mouseDown(e) {
     let mouseX = e.clientX - canvas.getBoundingClientRect().left;
     let mouseY = e.clientY - canvas.getBoundingClientRect().top;
     context.strokeStyle = colorInput.value;
+    context.fillStyle = colorInput.value;
     switch (toolSelected) {
         case "Paint":
             painting = true;
@@ -117,6 +118,7 @@ function mouseDown(e) {
         case "Line":
             context.lineWidth = sizeSlider.value;
             context.strokeStyle = colorInput.value;
+            
 
             context.lineTo(mouseX, mouseY);
             context.stroke();
@@ -127,19 +129,20 @@ function mouseDown(e) {
             context.lineWidth = 1;
             newCircle.arc(mouseX, mouseY, sizeSlider.value, 0, 360);
 
-            context.stroke(newCircle);
+            context.fill(newCircle);
             historyArray[currentLayer].push(new Shape(newCircle, colorInput.value, "Circle"));
             break;
         case "Square":
             let newSqaure = new Path2D();
             context.lineWidth = 1;
+            
             newSqaure.rect(
                 mouseX - sizeSlider.value / 2,
                 mouseY - sizeSlider.value / 2,
                 sizeSlider.value,
                 sizeSlider.value
             );
-            context.stroke(newSqaure);
+            context.fill(newSqaure);
             historyArray[currentLayer].push(new Shape(newSqaure, colorInput.value, "Square"));
             break;
     }
@@ -173,15 +176,20 @@ function Undo() {
 
 // Erases the canvas and redraws the canvas from the array of drawn objects
 function UpdateCanvas() {
-    ClearCanvas();
+    
+    // clear canvas // cant call ClearCanvas() here because then it will remove the history
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.beginPath();
+
     for (let i = 0; i < historyArray[currentLayer].length; i++) {
         context.lineCap = "round";
         context.strokeStyle = historyArray[currentLayer][i].style;
+        context.fillStyle = historyArray[currentLayer][i].style;
         context.lineWidth = historyArray[currentLayer][i].size;
 
         if (historyArray[currentLayer][i].type == "Square" || historyArray[currentLayer][i].type == "Circle") {
             context.lineWidth = 1;
-            context.stroke(historyArray[currentLayer][i].path);
+            context.fill(historyArray[currentLayer][i].path);
         }
         else if (historyArray[currentLayer][i].type == "Paint") {
             for (let j = 0; j < historyArray[currentLayer][i].path.length; j++) {
@@ -205,6 +213,7 @@ function UpdateCanvas() {
 function ClearCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
+    historyArray[currentLayer] = [];
 }
 
 // Creates a new canvas layer
@@ -247,7 +256,6 @@ function DeleteLayer(layer) {
         canvasContainer.innerHTML += '<canvas class="canvas-layer" width="720px" height="480px"></canvas>';
 
         layerContainer.innerHTML += "<div class='layer'><button class='hide-button' onclick='HideLayer(" + i + ")')>Hide</button><button class='layer-button' onclick='ChangeLayer(" + i + ")' >Layer " + i + "</button><button onclick='DeleteLayer(" + i + ")'>Delete</button></div>";
-        // layerContainer.innerHTML = '<div class="layer"><button class="hide-button" onclick="HideLayer('+ i +')">Hide</button><button class="layer-button" onclick="ChangeLayer('+ i +')">Layer '+ i +'</button><button onclick="DeleteLayer('+ i +')">Delete</button></div>';
     }
     canvasArray = document.querySelectorAll('[class=canvas-layer]');
 
